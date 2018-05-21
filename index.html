@@ -1,0 +1,96 @@
+<html>
+  <head>
+    <title>MIC Admin</title>
+	<script src="http://rawgit.com/ethereum/web3.js/0.16.0/dist/web3.min.js"></script>
+	<script src="https://rawgit.com/shawntabrizi/ERC-20-Token-Balance/1d53a3fc43abe5f92fb350c6fa6f22744566a85e/human_standard_token_abi.js"></script>
+
+	<script>
+		web3 = new Web3(new Web3.providers.HttpProvider("https://mainnet.infura.io/MEDIUMTUTORIAL"));
+		
+		function printETHBalance() {
+				var GET = {};
+				var query = window.location.search.substring(1).split("&");
+				for (var i = 0, max = query.length; i < max; i++)
+				{
+					if (query[i] === "") // check for trailing & with no param
+						continue;
+					var param = query[i].split("=");
+					GET[decodeURIComponent(param[0])] = decodeURIComponent(param[1] || "");
+				}
+				var account = GET.account;
+
+				var balanceWei = web3.eth.getBalance(account).toNumber();
+				var balance = web3.fromWei(balanceWei, 'ether');
+
+				//document.write('[' + account + ']<br><br>')
+				document.write(balance + ' ETH');			
+		}
+
+		function printMICBalance() {
+				var GET = {};
+				var query = window.location.search.substring(1).split("&");
+				for (var i = 0, max = query.length; i < max; i++)
+				{
+					if (query[i] === "") // check for trailing & with no param
+						continue;
+					var param = query[i].split("=");
+					GET[decodeURIComponent(param[0])] = decodeURIComponent(param[1] || "");
+				}
+				var account = GET.account;
+
+				//var balanceWei = web3.eth.getBalance(account).toNumber();
+				//var balance = web3.fromWei(balanceWei, 'ether');
+
+				//document.write('[' + account + ']<br><br>')
+				var tokenABI = human_standard_token_abi;
+				var tokenAddress = "0x1043f8ebc64fd8fb4b9884a43330dc0cf6f74194";
+
+				var tokenInst = web3.eth.contract(tokenABI).at(tokenAddress);
+				var balanceWei = tokenInst.balanceOf(account).toNumber();
+				var balance = web3.fromWei(balanceWei, 'ether');
+				//console.log("logging:" + tokenInst.balanceOf(account).toNumber());
+				document.write(balance + ' MIC');			
+		}
+	</script>
+  </head>
+
+  <body>
+  	<h2>Ethereum Account Explorer built on INFURA</h2>
+	<form method=GET action="index.html">
+		Enter an account: <input type=text size=50 name=account><input type=submit>
+	</form>
+		<br>
+		<p>Latest Block: 
+		<script>
+			document.write(web3.eth.blockNumber + "<br><br>");	
+		</script>
+		</p>
+		<p>ETH Balance:
+		<script>
+			printETHBalance();
+		</script>
+		</p>
+		<p>MIC Balance:
+		<script>
+			printMICBalance();
+		</script>
+		</p>
+		<script>
+			printMICHolders();
+		</script>
+		</p>
+
+  </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
